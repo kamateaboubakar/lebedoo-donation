@@ -1,0 +1,15 @@
+version: '3.8'
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: ./docker-entrypoint.sh
+    volumes:
+      - donation_media:/app/media
+    ports:
+      - "8084:8084"
+    env_file:
+      - .env
+volumes:
+  donation_media:
