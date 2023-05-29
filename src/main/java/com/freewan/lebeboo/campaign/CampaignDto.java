@@ -23,4 +23,5 @@ public class CampaignDto implements Serializable {
     private final String image;
     private final String imageUrl;
     private final String status;
+    private final int donorCount;
 }

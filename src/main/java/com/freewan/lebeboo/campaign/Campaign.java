@@ -64,4 +64,9 @@ public class Campaign {
     public Double getCollectedAmount() {
         return donations.stream().map(Donation::getAmount).reduce(0D, Double::sum);
     }
+
+    @Transient
+    public int getDonorCount() {
+        return donations.size();
+    }
 }
