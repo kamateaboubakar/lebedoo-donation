@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import java.time.format.DateTimeParseException;
 import java.util.List;
 
 /**
@@ -27,8 +28,6 @@ import java.util.List;
 @RestControllerAdvice
 @Slf4j
 public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
-
-    private static final ObjectMapper mapper = new ObjectMapper();
 
     /**
      * This method handle all runtime exceptions.
@@ -85,6 +84,17 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
      */
     @ExceptionHandler(ApplicationException.class)
     public ResponseEntity<ApiError> handleApplicationException(ApplicationException e) {
+        return new ResponseEntity<>(new ApiError(ApiResponseCode.BAD_REQUEST, e.getLocalizedMessage()), HttpStatus.BAD_REQUEST);
+    }
+
+    /**
+     * This method handle date time parse error.
+     *
+     * @param e the ApplicationException.
+     * @return ResponseEntity<ApiError>
+     */
+    @ExceptionHandler(DateTimeParseException.class)
+    public ResponseEntity<ApiError> handleDateTimeParseException(DateTimeParseException e) {
         return new ResponseEntity<>(new ApiError(ApiResponseCode.BAD_REQUEST, e.getLocalizedMessage()), HttpStatus.BAD_REQUEST);
     }
 }

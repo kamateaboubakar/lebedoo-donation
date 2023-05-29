@@ -16,11 +16,14 @@ import com.freewan.lebeboo.organization.OrganizationService;
 import feign.FeignException;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -42,6 +45,7 @@ import static com.freewan.lebeboo.Route.V1_URI;
 @RequestMapping(ROOT + V1_URI + CAMPAIGN)
 @RequiredArgsConstructor
 @Transactional
+@Validated
 public class CampaignController {
 
     private final CampaignService campaignService;
@@ -61,7 +65,7 @@ public class CampaignController {
 
     @Operation(summary = "Get all campaigns created by customer account id")
     @GetMapping(value = Route.CUSTOMER + "/{customerAccountId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<CampaignDto> getAllCampaignByCustomerAccountId(@PathVariable String customerAccountId) {
+    public List<CampaignDto> getAllCampaignByCustomerAccountId(@PathVariable @NotBlank String customerAccountId) {
         return mapper.toDtos(campaignService.findAllByCustomerAccountId(customerAccountId));
     }
 
@@ -73,7 +77,7 @@ public class CampaignController {
 
     @Operation(summary = "Get all donation for a campaign")
     @GetMapping(value = "/{campaignId}" + DONATION, produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<DonationDto> getAllCampaignApplication(@PathVariable Long campaignId) {
+    public List<DonationDto> getAllCampaignApplication(@PathVariable @NotNull Long campaignId) {
         Campaign campaign = campaignService.findById(campaignId);
         return donationMapper.toDtos(
                 donationRepository.findAllByCampaign(campaign));
@@ -81,14 +85,14 @@ public class CampaignController {
 
     @Operation(summary = "Get all donations for a campaign by customer account id")
     @GetMapping(value = DONATION + "/customers" + "/{customerAccountId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<DonationDto> getAllCampaignApplicationByAccountId(@PathVariable String customerAccountId) {
+    public List<DonationDto> getAllCampaignApplicationByAccountId(@PathVariable @NotBlank String customerAccountId) {
         return donationMapper.toDtos(
                 donationRepository.findAllByCustomerAccountId(customerAccountId));
     }
 
     @Operation(summary = "Make a donation to a campaign by id")
     @PostMapping(value = "/{campaignId}/donate", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ApiResponse applyToCampaign(@PathVariable Long campaignId, @RequestBody @Valid DonationRequest request) {
+    public ApiResponse applyToCampaign(@PathVariable @NotNull Long campaignId, @RequestBody @Valid DonationRequest request) {
         Campaign campaign = campaignService.findById(campaignId);
         // Verify account id.
         try {
@@ -130,7 +134,7 @@ public class CampaignController {
     @Operation(summary = "Delete a campaign by id")
     @DeleteMapping(value = "/{campaignId}", produces = MediaType.APPLICATION_JSON_VALUE)
     @Transactional(rollbackFor = IOException.class)
-    public ApiResponse deleteCampaignById(@PathVariable Long campaignId) throws IOException {
+    public ApiResponse deleteCampaignById(@PathVariable @NotNull Long campaignId) throws IOException {
         Campaign campaign = campaignService.findById(campaignId);
         campaignService.delete(campaign);
         fileSystemStorageService.delete(campaign.getImage());

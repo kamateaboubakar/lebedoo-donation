@@ -8,8 +8,11 @@ import com.freewan.lebeboo.exception.ApplicationException;
 import feign.FeignException;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -28,6 +31,7 @@ import static com.freewan.lebeboo.Route.V1_URI;
 @RestController
 @RequestMapping(ROOT + V1_URI + ORGANIZATION)
 @RequiredArgsConstructor
+@Validated
 public class OrganizationController {
 
     private final OrganizationService organizationService;
@@ -42,13 +46,13 @@ public class OrganizationController {
 
     @Operation(summary = "Get all organizations by customer account id")
     @GetMapping(value = Route.CUSTOMER + "/{customerAccountId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<OrganizationDto> getAllCompaniesByCustomerAccountId(@PathVariable String customerAccountId) {
+    public List<OrganizationDto> getAllCompaniesByCustomerAccountId(@PathVariable @NotBlank String customerAccountId) {
         return mapper.toDtos(organizationService.findAllByCustomerAccountId(customerAccountId));
     }
 
     @Operation(summary = "Get an organization by id")
     @GetMapping(value = "/{organizationId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public OrganizationDto getOrganizationById(@PathVariable Long organizationId) {
+    public OrganizationDto getOrganizationById(@PathVariable @NotNull Long organizationId) {
         return mapper.toDto(organizationService.findById(organizationId));
     }
 
@@ -85,7 +89,7 @@ public class OrganizationController {
 
     @Operation(summary = "Delete organization by id")
     @DeleteMapping(value = "/{organizationId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ApiResponse deleteOrganizationById(@PathVariable Long organizationId) {
+    public ApiResponse deleteOrganizationById(@PathVariable @NotNull Long organizationId) {
         organizationService.deleteById(organizationId);
         return new ApiResponse(ApiResponseCode.SUCCESS, "Organization deleted with success.");
     }
