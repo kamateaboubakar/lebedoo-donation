@@ -27,8 +27,8 @@ public interface CampaignMapper {
     @Mapping(target = "id", ignore = true)
     Campaign fromRequestToEntity(CampaignRequest campaignRequest);
 
-    @InheritConfiguration(name = "fromRequestToEntity")
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    @Mapping(target = "id", ignore = true)
     Campaign partialUpdateFromRequest(CampaignRequest campaignRequest, @MappingTarget Campaign campaign);
 
     List<CampaignDto> toDtos(List<Campaign> all);

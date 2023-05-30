@@ -18,7 +18,7 @@ public class CampaignRequest implements Serializable {
     private final Long categoryId;
     @NotBlank
     private final String label;
-    @NotBlank
+    @NotNull
     private final Double amount;
     @NotBlank
     private final String description;

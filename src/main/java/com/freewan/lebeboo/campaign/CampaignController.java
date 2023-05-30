@@ -125,10 +125,10 @@ public class CampaignController {
             throw new ApplicationException("Campaign id must not be null");
         }
         Campaign campaign = campaignService.findById(request.getId());
-        validateRequest(request);
+        validateAndUpdate(campaign, request);
         campaign = mapper.partialUpdateFromRequest(request, campaign);
         campaignService.save(campaign);
-        return ResponseEntity.ok(new ApiResponse(ApiResponseCode.SUCCESS, "Campaign create with success."));
+        return ResponseEntity.ok(new ApiResponse(ApiResponseCode.SUCCESS, "Campaign updated with success."));
     }
 
     @Operation(summary = "Delete a campaign by id")
@@ -144,5 +144,10 @@ public class CampaignController {
     void validateRequest(CampaignRequest request) {
         categoryService.findById(request.getCategoryId());
         organizationService.findById(request.getOrganizationId());
+    }
+
+    void validateAndUpdate(Campaign campaign, CampaignRequest request) {
+        campaign.setCategory(categoryService.findById(request.getCategoryId()));
+        campaign.setOrganization(organizationService.findById(request.getOrganizationId()));
     }
 }
