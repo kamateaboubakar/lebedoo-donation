@@ -62,11 +62,20 @@ public class CampaignController {
     public List<CampaignDto> getAllCampaign() {
         return mapper.toDtos(campaignService.findAll());
     }
-
+	
     @Operation(summary = "Get all campaigns created by customer account id")
     @GetMapping(value = Route.CUSTOMER + "/{customerAccountId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<CampaignDto> getAllCampaignByCustomerAccountId(@PathVariable @NotBlank String customerAccountId) {
         return mapper.toDtos(campaignService.findAllByCustomerAccountId(customerAccountId));
+    }
+	
+	/**
+	Changes
+	**/
+    @Operation(summary = "Get all campaigns created by category id")
+    @GetMapping(value = "/category/{categoryId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<CampaignDto> getAllCampaignByCategoryId(@PathVariable int categoryId) {
+        return mapper.toDtos(campaignService.findAllByCategoryId(categoryId));
     }
 
     @Operation(summary = "Get campaign by id")
