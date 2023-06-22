@@ -21,6 +21,10 @@ public class DefaultCampaignService extends
         return repository.findAllByOrganization_CustomerAccountId(customerAccountId);
     }
 
+    public List<Campaign> findAllByCategoryId(int categoryId) {
+        return repository.findAllByCategoryId(categoryId);
+    }
+
     @Override
     public Campaign findById(Long aLong) throws DataNotFoundException {
         try {
